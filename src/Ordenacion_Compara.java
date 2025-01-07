@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Ordenacion_Compara {
@@ -93,6 +94,73 @@ public class Ordenacion_Compara {
         return comparaciones;
     }
 
+    public static int shell_sort(int[] array){
+        int comparaciones = 0;
+        int n = array.length;
+
+        for(int intervalo = n/2; intervalo > 0; intervalo /= 2){
+            for(int i = intervalo; i < n; i++){
+                int temporal = array[i];
+                int j;
+                for(j = i; j >= intervalo && array[j - intervalo] > temporal; j -= intervalo){
+                    comparaciones++;
+                    array[j]= array[j - intervalo];
+                }
+                comparaciones++;
+                array[j] = temporal;
+            }
+        }
+        return comparaciones;
+    }
+
+    public static int counting_sort(int[] array){
+        int n = array.length;
+        int max = Arrays.stream(array).max().getAsInt();
+        int min = Arrays.stream(array).min().getAsInt();
+        int rango = max - min + 1;
+        int[] conteo = new int[rango];
+        int[] salida = new int[n];
+
+        for(int i = 0; i < n; i++){
+            conteo[array[i] - min]++;
+        }
+        for(int i = 1; i < rango; i++){
+            conteo[i] += conteo[i - 1];
+        }
+        for(int i = n - 1; i >= 0; i--){
+            salida[conteo[array[i] - min] - 1] = array[i];
+            conteo[array[i] - min]--;
+        }
+        System.arraycopy(salida, 0, array, 0, n);
+        return 0;
+    }
+
+    public static int radix_sort(int[] array){
+        int max = Arrays.stream(array).max().getAsInt();
+        for(int exp = 1; max / exp > 0; exp *= 10){
+            contarXdigito(array,exp);
+        }
+        return 0;
+    }
+
+    private static void contarXdigito(int[] array, int exp){
+        int n = array.length;
+        int[] salida = new int[n];
+        int[] conteo = new int[10];
+
+        for(int i = 0; i < n; i++){
+            conteo[(array[i]/ exp) % 10]++;
+        }
+        for(int i = 1; i < 10; i++){
+            conteo[i] += conteo[i - 1];
+        }
+        for(int i = n - 1; i >= 0; i--){
+            salida[conteo[(array[i] / exp) % 10] - 1 ] = array[i];
+            conteo[(array[i] / exp) % 10]--;
+        }
+        System.arraycopy(salida, 0, array,0 ,n);
+    }
+
     public static void main(String[] args){
         int[] arrayOriginal = {3, 8, 12, 34, 84, 91, 110};
 
@@ -103,12 +171,19 @@ public class Ordenacion_Compara {
         System.out.println("Ordenamiento Seleccion: " + selection_sort(array.clone()) + " Comparaciones");
         System.out.println("Ordenamiento Insercion: " + insertion_sort(array.clone()) + " Comparaciones");
         System.out.println("Ordenamientos Merge: " + ordenar_Merge(array.clone()) + " Compraciones");
+        System.out.println("Ordenamiento Shell: " + shell_sort(array.clone()) + " Comparaciones");
+        System.out.println("Ordenamiento Counting: " + counting_sort(array.clone())+ " Comparaciones");
+        System.out.println("Ordenamiento Radix: " + radix_sort(array.clone()) + " Comparaciones");
+
 
         System.out.println("\nResultados con la lista oredenada: ");
         System.out.println("Ordenamiento Burbuja: " + bubble_sort(arrayOriginal.clone()) + " Comparaciones");
         System.out.println("Ordenamiento Seleccion: " + selection_sort(arrayOriginal.clone()) + " Comparaciones");
         System.out.println("Ordenamiento Insercion: " + insertion_sort(arrayOriginal.clone()) + " Comparaciones");
         System.out.println("Ordenamiento Merge: " + ordenar_Merge(arrayOriginal.clone()) + " Comparaciones");
+        System.out.println("Ordenamiento Shell: " + shell_sort(arrayOriginal.clone()) + " Comparaciones");
+        System.out.println("Ordenamiento Counting: " + counting_sort(arrayOriginal.clone()) + " Comparaciones");
+        System.out.println("Ordenamiento Radix: " + radix_sort(arrayOriginal.clone()) + "Comparaciones");
 
     }
 }
